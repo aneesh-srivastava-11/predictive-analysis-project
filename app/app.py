@@ -36,101 +36,107 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-    html, body, [class*="css"] {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+    html, body, [class*="css"], .stMarkdown, .stText {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        letter-spacing: -0.01em;
     }
 
     /* Hero Banner */
     .hero-container {
-        background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F766E 100%);
-        padding: 32px 36px;
-        border-radius: 16px;
-        color: white;
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 55%, #0D9488 100%);
+        padding: 36px 40px;
+        border-radius: 18px;
+        color: #F8FAFC !important;
         margin-bottom: 24px;
-        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.12);
     }
     .hero-title {
-        font-size: 2.2rem;
+        font-size: 2.25rem;
         font-weight: 800;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.025em;
         margin: 0;
-        color: #F8FAFC;
+        color: #FFFFFF !important;
+        line-height: 1.2;
     }
     .hero-subtitle {
         font-size: 1.05rem;
-        color: #94A3B8;
-        margin-top: 8px;
+        color: #CBD5E1 !important;
+        margin-top: 10px;
         font-weight: 400;
+        line-height: 1.5;
     }
 
-    /* Stat Cards */
+    /* Stat Cards (Adaptive Light/Dark Container) */
     .stat-card {
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
-        border-radius: 12px;
-        padding: 20px 24px;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        border-radius: 14px;
+        padding: 22px 26px;
+        box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
     }
     .stat-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.09);
     }
     .stat-label {
-        font-size: 0.82rem;
-        font-weight: 600;
+        font-size: 0.8rem;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #64748B;
+        letter-spacing: 0.06em;
+        color: #64748B !important;
     }
     .stat-value {
-        font-size: 2.1rem;
+        font-size: 2.3rem;
         font-weight: 800;
-        color: #0F172A;
-        margin-top: 4px;
+        color: #0F172A !important;
+        margin-top: 6px;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
     }
     .stat-sub {
-        font-size: 0.85rem;
-        color: #10B981;
-        font-weight: 500;
-        margin-top: 4px;
+        font-size: 0.88rem;
+        color: #059669 !important;
+        font-weight: 600;
+        margin-top: 6px;
     }
 
     /* Price Category Badges */
     .badge {
         display: inline-flex;
         align-items: center;
-        padding: 6px 16px;
+        padding: 7px 18px;
         border-radius: 9999px;
-        font-size: 0.95rem;
+        font-size: 0.98rem;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.01em;
     }
     .badge-budget {
         background-color: #FEF3C7;
-        color: #92400E;
+        color: #92400E !important;
         border: 1px solid #FCD34D;
     }
     .badge-mid {
         background-color: #DBEAFE;
-        color: #1E40AF;
+        color: #1E40AF !important;
         border: 1px solid #93C5FD;
     }
     .badge-luxury {
         background-color: #D1FAE5;
-        color: #065F46;
+        color: #065F46 !important;
         border: 1px solid #6EE7B7;
     }
 
-    /* Form container */
+    /* Section Headers */
     .section-header {
-        font-size: 1.15rem;
+        font-size: 1.2rem;
         font-weight: 700;
-        color: #1E293B;
-        border-bottom: 2px solid #F1F5F9;
+        color: #0F172A !important;
+        border-bottom: 2px solid #E2E8F0;
         padding-bottom: 8px;
-        margin-bottom: 16px;
+        margin-bottom: 18px;
+        letter-spacing: -0.015em;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -160,25 +166,44 @@ def load_all_artifacts():
         with open(clf_json, "r") as f:
             artifacts["clf_evals"] = json.load(f)
 
-    # Models & Encoders
+    # Models & Encoders (Safely loaded with fallback)
     reg_path = os.path.join(models_dir, "best_regressor.joblib")
     clf_path = os.path.join(models_dir, "best_classifier.joblib")
     le_path = os.path.join(models_dir, "label_encoder.joblib")
     meta_path = os.path.join(models_dir, "feature_metadata.json")
     thresh_path = os.path.join(models_dir, "thresholds.json")
 
-    if os.path.exists(reg_path):
-        artifacts["best_regressor"] = joblib.load(reg_path)
-    if os.path.exists(clf_path):
-        artifacts["best_classifier"] = joblib.load(clf_path)
-    if os.path.exists(le_path):
-        artifacts["label_encoder"] = joblib.load(le_path)
-    if os.path.exists(meta_path):
-        with open(meta_path, "r") as f:
-            artifacts["metadata"] = json.load(f)
-    if os.path.exists(thresh_path):
-        with open(thresh_path, "r") as f:
-            artifacts["thresholds"] = json.load(f)
+    try:
+        if os.path.exists(reg_path):
+            artifacts["best_regressor"] = joblib.load(reg_path)
+    except Exception as e:
+        print(f"[Warning] Could not load regressor artifact: {e}")
+
+    try:
+        if os.path.exists(clf_path):
+            artifacts["best_classifier"] = joblib.load(clf_path)
+    except Exception as e:
+        print(f"[Warning] Could not load classifier artifact: {e}")
+
+    try:
+        if os.path.exists(le_path):
+            artifacts["label_encoder"] = joblib.load(le_path)
+    except Exception as e:
+        print(f"[Warning] Could not load label encoder artifact: {e}")
+
+    try:
+        if os.path.exists(meta_path):
+            with open(meta_path, "r") as f:
+                artifacts["metadata"] = json.load(f)
+    except Exception as e:
+        pass
+
+    try:
+        if os.path.exists(thresh_path):
+            with open(thresh_path, "r") as f:
+                artifacts["thresholds"] = json.load(f)
+    except Exception as e:
+        pass
 
     # Plots
     artifacts["cm_plot_path"] = os.path.join(plots_dir, "best_confusion_matrix.png")
@@ -394,9 +419,11 @@ with tabs[1]:
         fig, ax = plt.subplots(figsize=(7, 3.8))
         sns.barplot(data=df_reg, x="MAE", y="Model", palette="crest", ax=ax)
         for p in ax.patches:
-            ax.annotate(f"${p.get_width():,.0f}", (p.get_width() * 0.72, p.get_y() + p.get_height() / 2),
-                        color="white", ha="center", va="center", fontsize=9, weight="bold")
-        ax.set_xlabel("MAE ($)", fontsize=9)
+            w = p.get_width()
+            ax.annotate(f" ${w:,.0f} ", (w, p.get_y() + p.get_height() / 2),
+                        color="#0F172A", ha="left", va="center", fontsize=9, weight="bold")
+        ax.set_xlim(0, df_reg["MAE"].max() * 1.25)
+        ax.set_xlabel("MAE ($)", fontsize=9, weight="bold")
         ax.set_ylabel("")
         sns.despine(top=True, right=True)
         st.pyplot(fig)
@@ -406,9 +433,11 @@ with tabs[1]:
         fig2, ax2 = plt.subplots(figsize=(7, 3.8))
         sns.barplot(data=df_reg, x="VAF (%)", y="Model", palette="viridis", ax=ax2)
         for p in ax2.patches:
-            ax2.annotate(f"{p.get_width():.2f}%", (p.get_width() * 0.78, p.get_y() + p.get_height() / 2),
-                         color="white", ha="center", va="center", fontsize=9, weight="bold")
-        ax2.set_xlabel("VAF (%)", fontsize=9)
+            w = p.get_width()
+            ax2.annotate(f" {w:.2f}% ", (w, p.get_y() + p.get_height() / 2),
+                        color="#0F172A", ha="left", va="center", fontsize=9, weight="bold")
+        ax2.set_xlim(0, 105)
+        ax2.set_xlabel("VAF (%)", fontsize=9, weight="bold")
         ax2.set_ylabel("")
         sns.despine(top=True, right=True)
         st.pyplot(fig2)
