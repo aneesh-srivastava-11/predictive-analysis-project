@@ -161,17 +161,24 @@ smart-property-valuation/
 
 ---
 
-## 🔗 GitHub Repository Link Setup
+## 🔗 GitHub & Cloud Deployment
 
-To publish this project to GitHub:
-1. Create a new repository on GitHub named **`smart-property-valuation`**.
-2. Run the following commands in this directory:
+### 1. GitHub Setup
 ```bash
-git init
 git add .
-git commit -m "feat: initial commit with full data cleaning, dual models, complete performance matrices, and interactive app"
-git branch -M main
-git remote add origin https://github.com/<your-username>/smart-property-valuation.git
-git push -u origin main
+git commit -m "feat: enterprise styled UI, Procfile, and trained model artifacts"
+git push
 ```
-3. Use your actual repository link: `https://github.com/<your-username>/smart-property-valuation`
+
+### 2. Free Hosting on Render (Web Service)
+1. Sign in to [Render.com](https://render.com) and click **New +** $\to$ **Web Service**.
+2. Connect your GitHub repository (`predictive-analysis-project`).
+3. Fill in the deployment settings:
+   - **Name:** `smart-property-valuation`
+   - **Language:** `Python 3`
+   - **Branch:** `main`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `streamlit run app/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true`
+4. Choose the **Free** instance tier and click **Create Web Service**.
+5. Your application will be live with a free SSL public URL (e.g. `https://smart-property-valuation.onrender.com`).
+

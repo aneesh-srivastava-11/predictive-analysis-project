@@ -174,7 +174,7 @@ def train_classification_suite(X_train, y_train, X_test, y_test, preprocessor):
             y_true=y_test,
             y_pred=y_pred_labels,
             y_prob=y_prob,
-            class_names=class_names,
+            class_names=list(le.classes_),
             model_name=name
         )
 

@@ -148,12 +148,13 @@ def evaluate_classification(y_true, y_pred, y_prob=None, class_names=None, model
 
     if y_prob is not None:
         try:
-            # One-hot encode y_true for multiclass ROC
+            # One-hot encode y_true using class_names
             from sklearn.preprocessing import label_binarize
             y_bin = label_binarize(y_true, classes=class_names)
             if y_bin.shape[1] == 1:
                 y_bin = np.hstack([1 - y_bin, y_bin])
 
+            # Ensure valid probability distribution & calculate macro AUC
             auc_macro = roc_auc_score(y_bin, y_prob, multi_class="ovr", average="macro")
 
             for idx, cname in enumerate(class_names):
@@ -161,8 +162,8 @@ def evaluate_classification(y_true, y_pred, y_prob=None, class_names=None, model
                 c_auc = auc(fpr, tpr)
                 auc_per_class[cname] = round(float(c_auc), 4)
                 roc_curves[cname] = {
-                    "fpr": fpr.tolist(),
-                    "tpr": tpr.tolist(),
+                    "fpr": [round(float(v), 5) for v in fpr],
+                    "tpr": [round(float(v), 5) for v in tpr],
                     "auc": round(float(c_auc), 4)
                 }
         except Exception as e:
@@ -192,7 +193,7 @@ def evaluate_classification(y_true, y_pred, y_prob=None, class_names=None, model
 
     return {
         "summary": summary,
-        "per_class": pd.DataFrame(per_class_table),
+        "per_class": per_class_table,  # clean serializable list of dicts
         "confusion_matrix": cm.tolist(),
         "class_names": list(class_names),
         "roc_curves": roc_curves
